@@ -26,10 +26,5 @@
             <artifactId>service-base</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--    热部署依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-        </dependency>
     </dependencies>
 </project>
