@@ -1,15 +1,22 @@
 package com.atguigu.guli.service.edu.service.impl;
 
+import com.atguigu.guli.service.base.result.R;
 import com.atguigu.guli.service.edu.bo.TeacherQuery;
 import com.atguigu.guli.service.edu.entity.Teacher;
+import com.atguigu.guli.service.edu.feign.OssFileService;
 import com.atguigu.guli.service.edu.mapper.TeacherMapper;
 import com.atguigu.guli.service.edu.service.TeacherService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -22,6 +29,9 @@ import org.springframework.util.StringUtils;
 @Service
 public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> implements TeacherService {
 
+
+    @Autowired
+    private OssFileService ossFileService;
     @Override
     public IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherQuery teacherQuery) {
         // 1、创建page对象
@@ -53,5 +63,38 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
         }
         // 5、查询返回
         return baseMapper.selectPage(page,wrapper);
+    }
+
+    @Override
+    public List<Map<String, Object>> selectNameListByKey(String key) {
+        QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
+        wrapper.select("name").likeRight("name",key);
+
+        return baseMapper.selectMaps(wrapper);
+    }
+
+    @Override
+    public boolean removeAvatarById(String id) {
+        Teacher teacher = baseMapper.selectById(id);
+        if (!StringUtils.isEmpty(teacher)){
+            String avatar = teacher.getAvatar();
+            if (!StringUtils.isEmpty(avatar)){
+                // 删除图片
+                R r = ossFileService.remove(avatar);
+                return r.getSuccess();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean removeAndAvatarById(String id) {
+        // 根据id查询,然后把数据库中的头像修改为null
+        Teacher teacher = baseMapper.selectById(id);
+        teacher.setAvatar("");
+        baseMapper.updateById(teacher);
+        // 执行删除操作
+        int result = baseMapper.deleteById(teacher);
+        return result > 0;
     }
 }

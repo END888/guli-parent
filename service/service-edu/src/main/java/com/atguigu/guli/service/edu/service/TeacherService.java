@@ -5,6 +5,9 @@ import com.atguigu.guli.service.edu.entity.Teacher;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 讲师 服务类
@@ -15,4 +18,21 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface TeacherService extends IService<Teacher> {
     IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherQuery teacherQuery);
+
+    List<Map<String, Object>> selectNameListByKey(String key);
+
+    /**
+     * 根据讲师id删除讲师头像
+     * @param id
+     * @return
+     */
+    boolean removeAvatarById(String id);
+
+
+    /**
+     * 根据讲师id删除，并且将数据库中的头像置为空
+     * @param id
+     * @return
+     */
+    boolean removeAndAvatarById(String id);
 }
