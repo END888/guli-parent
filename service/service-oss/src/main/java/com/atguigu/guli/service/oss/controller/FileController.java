@@ -36,7 +36,8 @@ public class FileController {
             @ApiParam(value = "文件", required = true)
             @RequestParam("file") MultipartFile file,
             @ApiParam(value = "模块", required = true)
-            @RequestParam("module") String module) throws IOException {
+            @RequestParam("module")
+                    String module) throws IOException {
 
         try {
             InputStream inputStream = file.getInputStream();
@@ -63,6 +64,21 @@ public class FileController {
 //            e.printStackTrace();
 //        }
         return R.ok();
+    }
+
+    @ApiOperation(value = "测试")
+    @GetMapping("test2")
+    public R test2(@RequestParam String str){
+        System.out.println(str);
+        log.info("oss test2被调用");
+        return R.ok().message("成功");
+    }
+    @ApiOperation(value = "测试")
+    @GetMapping("test3")
+    public R test2(@RequestParam R r){
+        System.out.println(r.getMessage());
+        System.out.println("oss test3被调用");
+        return R.ok().message("OSS返回");
     }
 
     @ApiOperation(value = "文件删除")

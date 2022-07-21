@@ -42,10 +42,6 @@ public class AdminTeacherController {
     @ApiOperation(value = "所有讲师列表")
     @GetMapping("list")
     public R listAll() {
-        log.debug("{}级别日志", "debug");
-        log.info("{}级别日志", "info");
-        log.warn("{}级别日志", "warn");
-        log.error("{}级别日志", "error");
         List<Teacher> list = teacherService.list();
         return R.ok().data("items", list).message("讲师列表获取成功");
     }
@@ -134,10 +130,36 @@ public class AdminTeacherController {
         return R.ok();
     }
 
+    @ApiOperation(value = "服务调用测试")
+    @GetMapping("test2")
+    public R test2(){
+        String str = "Hello";
+        R r = ossFileService.test2(str);
+        System.out.println(r);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "服务调用测试")
+    @GetMapping("test3")
+    public R test3(){
+        R test3 = ossFileService.test3(R.ok().message("test3"));
+        System.out.println(test3.getMessage());
+        return R.ok();
+    }
+
     @ApiOperation(value = "sentinel测试")
     @GetMapping("message1")
     public String message1(){
         return "message1";
+    }
+
+
+    @ApiOperation(value = "saveTest保存测试")
+    @PostMapping("saveTest")
+    public R saveTest(@RequestBody Teacher teacher){
+        log.info("教师信息：{}",teacher);
+//        return R.ok().message("讲师添加成功！");
+        return R.error().message("添加失败");
     }
 
 }

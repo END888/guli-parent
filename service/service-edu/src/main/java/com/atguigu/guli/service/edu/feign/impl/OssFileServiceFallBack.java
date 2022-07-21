@@ -18,4 +18,15 @@ public class OssFileServiceFallBack implements OssFileService {
         log.warn("熔断保护");
         return null;
     }
+
+    @Override
+    public R test2(String str) {
+        log.warn("熔断保护");
+        return null;
+    }
+
+    @Override
+    public R test3(R r) {
+        return null;
+    }
 }
