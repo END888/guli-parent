@@ -20,4 +20,10 @@ public interface SubjectService extends IService<Subject> {
     void  batchImport(InputStream inputStream);
 
     List<SubjectVo> nestedList();
+
+    /**
+     * 使用mybatisPlus进行处理
+     * @return
+     */
+    List<SubjectVo> nestedList2();
 }
