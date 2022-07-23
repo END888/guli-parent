@@ -1,6 +1,7 @@
 package com.atguigu.guli.service.edu.controller.admin;
 
 
+import com.atguigu.guli.service.base.model.BaseEntity;
 import com.atguigu.guli.service.base.result.R;
 import com.atguigu.guli.service.edu.bo.TeacherQuery;
 import com.atguigu.guli.service.edu.entity.Teacher;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -49,15 +51,15 @@ public class AdminTeacherController {
     @ApiOperation(value = "根据讲师ID删除讲师")
     @DeleteMapping("remove/{id}")
     public R removeById(@ApiParam(value = "讲师ID", required = true) @PathVariable String id) {
-        // 删除图片
-        teacherService.removeAvatarById(id);
-        // 删除讲师
+        Teacher teacher = teacherService.getById(id);
         boolean result = teacherService.removeAndAvatarById(id);
         if (result) {
+            teacherService.removeAvatarById(teacher.getAvatar());
             return R.ok().message("讲师删除成功");
         }
         return R.error().message("讲师删除失败");
     }
+
 
     @ApiOperation("分页讲师列表")
     @GetMapping("list/{page}/{limit}")
@@ -101,12 +103,12 @@ public class AdminTeacherController {
 
     @ApiOperation(("根据id列表删除讲师"))
     @DeleteMapping("batch-remove")
-    public R removeRows(@ApiParam(value = "讲师id列表",required = true)
-                        @RequestBody List<String> idList){
+    public R removeRows(@ApiParam(value = "讲师id列表", required = true)
+                        @RequestBody List<String> idList) {
         boolean result = teacherService.removeByIds(idList);
-        if (result){
+        if (result) {
             return R.ok().message("删除成功");
-        }else {
+        } else {
             return R.error().message("数据不存在");
         }
 
@@ -117,7 +119,7 @@ public class AdminTeacherController {
     @GetMapping("list/name/{key}")
     public R selectNameListByKey(
             @ApiParam(value = "查询关键字", required = true)
-            @PathVariable String key){
+            @PathVariable String key) {
         List<Map<String, Object>> nameList = teacherService.selectNameListByKey(key);
         return R.ok().data("nameList", nameList);
     }
@@ -125,14 +127,14 @@ public class AdminTeacherController {
 
     @ApiOperation(value = "服务调用测试")
     @GetMapping("test")
-    public R test(){
+    public R test() {
         ossFileService.test();
         return R.ok();
     }
 
     @ApiOperation(value = "服务调用测试")
     @GetMapping("test2")
-    public R test2(){
+    public R test2() {
         String str = "Hello";
         R r = ossFileService.test2(str);
         System.out.println(r);
@@ -141,7 +143,7 @@ public class AdminTeacherController {
 
     @ApiOperation(value = "服务调用测试")
     @GetMapping("test3")
-    public R test3(){
+    public R test3() {
         R test3 = ossFileService.test3(R.ok().message("test3"));
         System.out.println(test3.getMessage());
         return R.ok();
@@ -149,17 +151,27 @@ public class AdminTeacherController {
 
     @ApiOperation(value = "sentinel测试")
     @GetMapping("message1")
-    public String message1(){
+    public String message1() {
         return "message1";
     }
 
 
     @ApiOperation(value = "saveTest保存测试")
     @PostMapping("saveTest")
-    public R saveTest(@RequestBody Teacher teacher){
-        log.info("教师信息：{}",teacher);
+    public R saveTest(@RequestBody Teacher teacher) {
+        log.info("教师信息：{}", teacher);
 //        return R.ok().message("讲师添加成功！");
         return R.error().message("添加失败");
+    }
+
+    @ApiOperation("远程调用接口传入参数类型为JavaBean方式")
+    @GetMapping("entity")
+    public String entity(){
+        BaseEntity baseEntity = new BaseEntity();
+        baseEntity.setId("1001");
+        baseEntity.setGmtCreate(new Date());
+        baseEntity.setGmtCreate(new Date());
+        return ossFileService.entity(baseEntity);
     }
 
 }

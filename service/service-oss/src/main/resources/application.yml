@@ -6,6 +6,14 @@ spring:
     active: dev # 环境设置
   application:
     name: service-oss # 服务名
+  jackson:
+    date-format: yyy-MM-dd HH:mmm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 50MB # 一次请求单个表单项上传文件大小限制
+      max-request-size: 100MB # 一次请求多个表单项上传文件总大小限制
+
   cloud:
     nacos:
       discovery:

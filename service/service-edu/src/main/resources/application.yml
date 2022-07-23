@@ -28,6 +28,9 @@ spring:
       filter:
         url-patterns:
           - /**
+  redis:
+    port: 6379
+    host: 192.168.100.100
 feign:
   sentinel:
     enabled: true
@@ -59,7 +62,6 @@ ribbon:
 logging:
   level:
     com.atguigu.guli.service.edu.feign.OssFileService: debug #以什么级别监控哪个接口
-
 
 
 

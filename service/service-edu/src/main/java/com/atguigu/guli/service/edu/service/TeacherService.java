@@ -22,11 +22,11 @@ public interface TeacherService extends IService<Teacher> {
     List<Map<String, Object>> selectNameListByKey(String key);
 
     /**
-     * 根据讲师id删除讲师头像
-     * @param id
+     * 根据讲师头像地址删除OSS中的头像
+     * @param avatar
      * @return
      */
-    boolean removeAvatarById(String id);
+    boolean removeAvatarById(String avatar);
 
 
     /**

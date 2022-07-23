@@ -32,16 +32,17 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
 
     @Autowired
     private OssFileService ossFileService;
+
     @Override
     public IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherQuery teacherQuery) {
         // 1、创建page对象
-        Page<Teacher> page = new Page<>(pageNum,limit);
+        Page<Teacher> page = new Page<>(pageNum, limit);
         // 2、构建查询语句（排序）
         LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByAsc(Teacher::getSort);
         // 3、判断teacherQuery是否为空
-        if (StringUtils.isEmpty(teacherQuery)){
-            return baseMapper.selectPage(page,wrapper);
+        if (StringUtils.isEmpty(teacherQuery)) {
+            return baseMapper.selectPage(page, wrapper);
         }
         // 4、对查询条件分别进行非空判断，并添加查询条件
         String name = teacherQuery.getName();
@@ -49,40 +50,36 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
         String joinDateBegin = teacherQuery.getJoinDateBegin();
         String joinDateEnd = teacherQuery.getJoinDateEnd();
 
-        if (!StringUtils.isEmpty(name)){
-            wrapper.likeRight(Teacher::getName,name);
+        if (!StringUtils.isEmpty(name)) {
+            wrapper.likeRight(Teacher::getName, name);
         }
-        if (level != null){
-            wrapper.eq(Teacher::getLevel,level);
+        if (level != null) {
+            wrapper.eq(Teacher::getLevel, level);
         }
-        if (!StringUtils.isEmpty(joinDateBegin)){
-            wrapper.ge(Teacher::getJoinDate,joinDateBegin);
+        if (!StringUtils.isEmpty(joinDateBegin)) {
+            wrapper.ge(Teacher::getJoinDate, joinDateBegin);
         }
-        if (!StringUtils.isEmpty(joinDateEnd)){
-            wrapper.le(Teacher::getJoinDate,joinDateEnd);
+        if (!StringUtils.isEmpty(joinDateEnd)) {
+            wrapper.le(Teacher::getJoinDate, joinDateEnd);
         }
         // 5、查询返回
-        return baseMapper.selectPage(page,wrapper);
+        return baseMapper.selectPage(page, wrapper);
     }
 
     @Override
     public List<Map<String, Object>> selectNameListByKey(String key) {
         QueryWrapper<Teacher> wrapper = new QueryWrapper<>();
-        wrapper.select("name").likeRight("name",key);
+        wrapper.select("name").likeRight("name", key);
 
         return baseMapper.selectMaps(wrapper);
     }
 
     @Override
-    public boolean removeAvatarById(String id) {
-        Teacher teacher = baseMapper.selectById(id);
-        if (!StringUtils.isEmpty(teacher)){
-            String avatar = teacher.getAvatar();
-            if (!StringUtils.isEmpty(avatar)){
-                // 删除图片
-                R r = ossFileService.remove(avatar);
-                return r.getSuccess();
-            }
+    public boolean removeAvatarById(String avatar) {
+        if (!StringUtils.isEmpty(avatar)) {
+            // 删除图片
+            R r = ossFileService.remove(avatar);
+            return r.getSuccess();
         }
         return false;
     }

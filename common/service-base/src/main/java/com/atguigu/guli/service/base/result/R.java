@@ -4,12 +4,13 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
 @ApiModel(value = "全局统一返回结果")
-public class R {
+public class R implements Serializable {
 
     @ApiModelProperty(value = "是否成功")
     private Boolean success;

@@ -1,8 +1,7 @@
 package com.atguigu.guli.service.oss.controller;
 
-import com.atguigu.guli.service.base.exception.GuliException;
+import com.atguigu.guli.service.base.model.BaseEntity;
 import com.atguigu.guli.service.base.result.R;
-import com.atguigu.guli.service.base.result.ResultCodeEnum;
 import com.atguigu.guli.service.oss.service.FileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,7 +48,8 @@ public class FileController {
         } catch (IOException e) {
             log.error(ExceptionUtils.getStackTrace(e));
             e.printStackTrace();
-            throw new GuliException(ResultCodeEnum.FILE_UPLOAD_ERROR);
+//            throw new GuliException(ResultCodeEnum.FILE_UPLOAD_ERROR);
+            throw new RuntimeException();
         }
     }
 
@@ -87,4 +87,12 @@ public class FileController {
         fileService.removeFile(url);
         return R.ok().message("文件删除成功");
     }
+
+    @ApiOperation("远程被调用接口接收请求参数为JavaBean时的处理")
+    @GetMapping("entity")
+    public String baseEntity(BaseEntity baseEntity){
+        System.out.println("baseEntity = " + baseEntity);
+        return "Hello World";
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.atguigu.guli.service.edu.feign;
 
+import com.atguigu.guli.service.base.model.BaseEntity;
 import com.atguigu.guli.service.base.result.R;
 import com.atguigu.guli.service.edu.feign.impl.OssFileServiceFallBack;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -25,4 +26,7 @@ public interface OssFileService {
 
     @GetMapping("/admin/oss/file/test3")
     R test3(@SpringQueryMap R r);
+
+    @GetMapping("/admin/oss/file/entity")
+    String entity(@SpringQueryMap BaseEntity baseEntity);
 }

@@ -1,9 +1,8 @@
 package com.atguigu.guli.service.edu.controller.admin;
 
 
-import com.atguigu.guli.service.base.exception.GuliException;
+//import com.atguigu.guli.service.base.exception.GuliException;
 import com.atguigu.guli.service.base.result.R;
-import com.atguigu.guli.service.base.result.ResultCodeEnum;
 import com.atguigu.guli.service.edu.service.SubjectService;
 import com.atguigu.guli.service.edu.vo.SubjectVo;
 import io.swagger.annotations.Api;
@@ -45,14 +44,16 @@ public class SubjectController {
             return R.ok().message("批量导入成功");
         } catch (IOException e) {
             log.error(ExceptionUtils.getStackTrace(e));
-            throw new GuliException(ResultCodeEnum.EXCEL_DATA_IMPORT_ERROR);
+//            throw new GuliException(ResultCodeEnum.EXCEL_DATA_IMPORT_ERROR);
+            throw new RuntimeException();
         }
     }
 
     @ApiOperation(value = "嵌套数据列表")
     @GetMapping("nested-list")
     public R nestedList(){
-        List<SubjectVo> subjectVoList = subjectService.nestedList();
+//        List<SubjectVo> subjectVoList = subjectService.nestedList();
+        List<SubjectVo> subjectVoList = subjectService.nestedList2();
         return R.ok().data("items",subjectVoList);
     }
 
