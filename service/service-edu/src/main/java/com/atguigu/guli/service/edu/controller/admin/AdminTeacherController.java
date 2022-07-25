@@ -3,9 +3,9 @@ package com.atguigu.guli.service.edu.controller.admin;
 
 import com.atguigu.guli.service.base.model.BaseEntity;
 import com.atguigu.guli.service.base.result.R;
-import com.atguigu.guli.service.edu.bo.TeacherQuery;
+import com.atguigu.guli.service.edu.vo.TeacherQuery;
 import com.atguigu.guli.service.edu.entity.Teacher;
-import com.atguigu.guli.service.edu.feign.OssFileService;
+import com.atguigu.guli.service.edu.feign.OssClient;
 import com.atguigu.guli.service.edu.service.TeacherService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +39,8 @@ public class AdminTeacherController {
     @Autowired
     private TeacherService teacherService;
 
-    @Autowired
-    private OssFileService ossFileService;
+    @Resource
+    private OssClient ossclient;
 
     @ApiOperation(value = "所有讲师列表")
     @GetMapping("list")
@@ -48,18 +49,19 @@ public class AdminTeacherController {
         return R.ok().data("items", list).message("讲师列表获取成功");
     }
 
-    @ApiOperation(value = "根据讲师ID删除讲师")
-    @DeleteMapping("remove/{id}")
-    public R removeById(@ApiParam(value = "讲师ID", required = true) @PathVariable String id) {
+    @ApiOperation(value = "根据id删除讲师")
+    @DeleteMapping("deleteById/{id}")
+    public R deleteById(@ApiParam(value = "讲师id") @PathVariable("id") String id) {
+        // 删除讲师后删除oss中的头像文件
         Teacher teacher = teacherService.getById(id);
-        boolean result = teacherService.removeAndAvatarById(id);
-        if (result) {
-            teacherService.removeAvatarById(teacher.getAvatar());
-            return R.ok().message("讲师删除成功");
+        boolean b = teacherService.deleteById(id);
+        // 讲师数据删除成功：只要讲师数据库数据删除成功，头像删除成功失败都可以
+        if (b && !StringUtils.isEmpty(teacher.getAvatar())) {
+            // 删除讲师头像：尽量保证头像能够成功删除，如果有异常在降级兜底方法中可以保存删除失败的头像地址稍后再处理
+            ossclient.delete(teacher.getAvatar(), "avatar");
         }
-        return R.error().message("讲师删除失败");
+        return R.ok();
     }
-
 
     @ApiOperation("分页讲师列表")
     @GetMapping("list/{page}/{limit}")
@@ -125,30 +127,6 @@ public class AdminTeacherController {
     }
 
 
-    @ApiOperation(value = "服务调用测试")
-    @GetMapping("test")
-    public R test() {
-        ossFileService.test();
-        return R.ok();
-    }
-
-    @ApiOperation(value = "服务调用测试")
-    @GetMapping("test2")
-    public R test2() {
-        String str = "Hello";
-        R r = ossFileService.test2(str);
-        System.out.println(r);
-        return R.ok();
-    }
-
-    @ApiOperation(value = "服务调用测试")
-    @GetMapping("test3")
-    public R test3() {
-        R test3 = ossFileService.test3(R.ok().message("test3"));
-        System.out.println(test3.getMessage());
-        return R.ok();
-    }
-
     @ApiOperation(value = "sentinel测试")
     @GetMapping("message1")
     public String message1() {
@@ -166,12 +144,12 @@ public class AdminTeacherController {
 
     @ApiOperation("远程调用接口传入参数类型为JavaBean方式")
     @GetMapping("entity")
-    public String entity(){
+    public String entity() {
         BaseEntity baseEntity = new BaseEntity();
         baseEntity.setId("1001");
         baseEntity.setGmtCreate(new Date());
         baseEntity.setGmtCreate(new Date());
-        return ossFileService.entity(baseEntity);
+        return ossclient.entity(baseEntity);
     }
 
 }

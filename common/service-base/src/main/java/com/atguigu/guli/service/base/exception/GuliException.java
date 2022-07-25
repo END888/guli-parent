@@ -33,6 +33,15 @@ public class GuliException extends RuntimeException {
         super(resultCodeEnum.getMessage());
         this.code = resultCodeEnum.getCode();
     }
+    /**
+     * 接收枚举类型
+     * @param resultCodeEnum
+     */
+    public GuliException(ResultCodeEnum resultCodeEnum,Exception e) {
+        super(e);
+        this.code = resultCodeEnum.getCode();
+    }
+
 
     @ExceptionHandler(GuliException.class)
     @ResponseBody

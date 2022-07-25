@@ -1,17 +1,25 @@
-package com.atguigu.guli.service.edu.feign.impl;
+package com.atguigu.guli.service.edu.feign.fallback;
 
 import com.atguigu.guli.service.base.model.BaseEntity;
 import com.atguigu.guli.service.base.result.R;
-import com.atguigu.guli.service.edu.feign.OssFileService;
+import com.atguigu.guli.service.edu.feign.OssClient;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundHashOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class OssFileServiceFallBack implements OssFileService {
+public class OssClientFallback implements OssClient {
+
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
+
     @Override
-    public R test() {
-        return R.error();
+    public String entity(BaseEntity baseEntity) {
+        return null;
     }
 
     /**
@@ -26,25 +34,11 @@ public class OssFileServiceFallBack implements OssFileService {
      *          - 创建一个定时任务，每过1小时获取list中的消息消费，遍历再次尝试删除消息
      */
     @Override
-    public R remove(String url) {
+    public R delete(String path, String module) {
         // 保存删除失败的头像地址和它的模块
-        log.warn("ossClient远程删除讲师头像失败，地址：{}",url);
-        return R.error().message("阿里云头像删除失败");
-    }
-
-    @Override
-    public R test2(String str) {
-        log.warn("熔断保护");
-        return null;
-    }
-
-    @Override
-    public R test3(R r) {
-        return null;
-    }
-
-    @Override
-    public String entity(BaseEntity baseEntity) {
+        // 将删除失败的头像地址写入到redis中
+        BoundHashOperations<String, Object, Object> hashOps = redisTemplate.boundHashOps("teacher:delfail:avatars");
+        hashOps.put(path,module);
         return null;
     }
 }

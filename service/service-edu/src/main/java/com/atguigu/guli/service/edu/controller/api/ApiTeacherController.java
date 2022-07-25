@@ -2,7 +2,7 @@ package com.atguigu.guli.service.edu.controller.api;
 
 
 import com.atguigu.guli.service.base.result.R;
-import com.atguigu.guli.service.edu.bo.TeacherQuery;
+import com.atguigu.guli.service.edu.vo.TeacherQuery;
 import com.atguigu.guli.service.edu.entity.Teacher;
 import com.atguigu.guli.service.edu.service.TeacherService;
 import com.baomidou.mybatisplus.core.metadata.IPage;

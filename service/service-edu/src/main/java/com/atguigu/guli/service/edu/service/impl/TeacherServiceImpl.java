@@ -1,9 +1,8 @@
 package com.atguigu.guli.service.edu.service.impl;
 
-import com.atguigu.guli.service.base.result.R;
-import com.atguigu.guli.service.edu.bo.TeacherQuery;
+import com.atguigu.guli.service.edu.vo.TeacherQuery;
 import com.atguigu.guli.service.edu.entity.Teacher;
-import com.atguigu.guli.service.edu.feign.OssFileService;
+import com.atguigu.guli.service.edu.feign.OssClient;
 import com.atguigu.guli.service.edu.mapper.TeacherMapper;
 import com.atguigu.guli.service.edu.service.TeacherService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
 
 
     @Autowired
-    private OssFileService ossFileService;
+    private OssClient ossClient;
 
     @Override
     public IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherQuery teacherQuery) {
@@ -75,16 +75,6 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
     }
 
     @Override
-    public boolean removeAvatarById(String avatar) {
-        if (!StringUtils.isEmpty(avatar)) {
-            // 删除图片
-            R r = ossFileService.remove(avatar);
-            return r.getSuccess();
-        }
-        return false;
-    }
-
-    @Override
     public boolean removeAndAvatarById(String id) {
         // 根据id查询,然后把数据库中的头像修改为null
         Teacher teacher = baseMapper.selectById(id);
@@ -93,5 +83,16 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
         // 执行删除操作
         int result = baseMapper.deleteById(teacher);
         return result > 0;
+    }
+
+    @Transactional
+    @Override
+    public boolean deleteById(String id) {
+        // 先根据讲师id查询，然后将头像设置为空字符串，进行更新
+        Teacher teacher = baseMapper.selectById(id);
+        teacher.setAvatar("");
+        baseMapper.updateById(teacher);
+        int i = baseMapper.deleteById(id);
+        return i > 0;
     }
 }

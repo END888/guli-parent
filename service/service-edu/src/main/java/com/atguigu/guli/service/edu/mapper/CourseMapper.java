@@ -1,7 +1,11 @@
 package com.atguigu.guli.service.edu.mapper;
 
 import com.atguigu.guli.service.edu.entity.Course;
+import com.atguigu.guli.service.edu.vo.AdminCourseItemVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CourseMapper extends BaseMapper<Course> {
 
+    /**
+     * 进行分页条件查询
+     * @param page  分页对象
+     * @return  查询结果
+     */
+    List<AdminCourseItemVo> selectCourseItemVoPage(Page<AdminCourseItemVo> page);
 }

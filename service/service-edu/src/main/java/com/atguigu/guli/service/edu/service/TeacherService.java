@@ -1,6 +1,6 @@
 package com.atguigu.guli.service.edu.service;
 
-import com.atguigu.guli.service.edu.bo.TeacherQuery;
+import com.atguigu.guli.service.edu.vo.TeacherQuery;
 import com.atguigu.guli.service.edu.entity.Teacher;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -21,12 +21,6 @@ public interface TeacherService extends IService<Teacher> {
 
     List<Map<String, Object>> selectNameListByKey(String key);
 
-    /**
-     * 根据讲师头像地址删除OSS中的头像
-     * @param avatar
-     * @return
-     */
-    boolean removeAvatarById(String avatar);
 
 
     /**
@@ -35,4 +29,11 @@ public interface TeacherService extends IService<Teacher> {
      * @return
      */
     boolean removeAndAvatarById(String id);
+
+    /**
+     *  根据id先删除讲师头像，再进行逻辑删除
+     * @param id
+     * @return
+     */
+    boolean deleteById(String id);
 }

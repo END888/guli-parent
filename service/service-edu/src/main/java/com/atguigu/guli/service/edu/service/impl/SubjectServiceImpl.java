@@ -66,6 +66,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
                 }).sorted((s1, s2) -> {
                     return (s1.getSort() == null ? 0 : s1.getSort()) - (s2.getSort() == null ? 0 : s2.getSort());
                 }).collect(Collectors.toList());
+
         return subjectVoList;
     }
 
@@ -74,7 +75,7 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
             return sub.getParentId().equals(subject.getId());
         }).map(sub -> {
             SubjectVo subjectVo = new SubjectVo();
-            BeanUtils.copyProperties(sub,subjectVo);
+            BeanUtils.copyProperties(sub, subjectVo);
             subjectVo.setChildren(getChildren(sub, selectList));
             return subjectVo;
         }).sorted((s1, s2) -> {

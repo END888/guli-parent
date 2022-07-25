@@ -2,4 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atguigu.guli.service.edu.mapper.CourseMapper">
 
+    <select id="selectCourseItemVoPage" resultType="com.atguigu.guli.service.edu.vo.AdminCourseItemVo">
+        select c1.id,
+               c1.teacher_id,
+               c1.subject_id,
+               c1.subject_parent_id,
+               c1.title,
+               c1.price,
+               c1.lesson_num,
+               c1.cover,
+               c1.buy_count,
+               c1.view_count,
+               c1.status,
+               c1.publish_time,
+               c1.gmt_create,
+               s1.title subjectTitle,
+               s2.title subjectParentTitle,
+               t1.name  teacherName
+        from edu_course c1
+                 left join
+             edu_subject s1 on c1.subject_id = s1.id
+                 left join edu_subject s2 on c1.subject_parent_id = s2.id
+                 left join edu_teacher t1 on c1.teacher_id = t1.id
+    </select>
 </mapper>
