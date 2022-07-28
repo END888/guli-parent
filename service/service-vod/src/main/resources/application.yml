@@ -1,0 +1,31 @@
+server:
+  port: 8130 # 服务端口
+
+spring:
+  profiles:
+    active: dev # 环境设置
+  application:
+    name: service-oss # 服务名
+  jackson:
+    date-format: yyy-MM-dd HH:mmm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 50MB # 一次请求单个表单项上传文件大小限制
+      max-request-size: 100MB # 一次请求多个表单项上传文件总大小限制
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: 192.168.100.100
+    port: 6379
+
+aliyun:
+  vod:
+    AccessKeyId: LTAI5tFKSrqJT9NpwFrNjAeM
+    AccessKeySecret: HULmexek99zeNE2RbEsRjEdEVqtWeK
+    templateGroupId: d7edc43f2856ac89d983708211bec1e2
+    workflowId: b46f67e9cb03b45f247ad14c3b7e9bf9
+
