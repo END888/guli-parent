@@ -2,7 +2,10 @@ package com.atguigu.guli.service.edu.controller.admin;
 
 
 //import com.atguigu.guli.service.base.exception.GuliException;
+
+import com.atguigu.guli.service.base.exception.GuliException;
 import com.atguigu.guli.service.base.result.R;
+import com.atguigu.guli.service.base.result.ResultCodeEnum;
 import com.atguigu.guli.service.edu.entity.Subject;
 import com.atguigu.guli.service.edu.service.SubjectService;
 import com.atguigu.guli.service.edu.vo.SubjectVo;
@@ -47,8 +50,7 @@ public class AdminSubjectController {
             return R.ok().message("批量导入成功");
         } catch (IOException e) {
             log.error(ExceptionUtils.getStackTrace(e));
-//            throw new GuliException(ResultCodeEnum.EXCEL_DATA_IMPORT_ERROR);
-            throw new RuntimeException();
+            throw new GuliException(ResultCodeEnum.EXCEL_DATA_IMPORT_ERROR);
         }
     }
 

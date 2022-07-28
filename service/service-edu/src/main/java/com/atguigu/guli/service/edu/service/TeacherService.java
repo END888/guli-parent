@@ -1,6 +1,6 @@
 package com.atguigu.guli.service.edu.service;
 
-import com.atguigu.guli.service.edu.vo.TeacherQuery;
+import com.atguigu.guli.service.edu.vo.TeacherVo;
 import com.atguigu.guli.service.edu.entity.Teacher;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -17,7 +17,7 @@ import java.util.Map;
  * @since 2022-07-16
  */
 public interface TeacherService extends IService<Teacher> {
-    IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherQuery teacherQuery);
+    IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherVo teacherVo);
 
     List<Map<String, Object>> selectNameListByKey(String key);
 

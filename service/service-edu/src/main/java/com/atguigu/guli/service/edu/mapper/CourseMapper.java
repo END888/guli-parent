@@ -2,8 +2,11 @@ package com.atguigu.guli.service.edu.mapper;
 
 import com.atguigu.guli.service.edu.entity.Course;
 import com.atguigu.guli.service.edu.vo.AdminCourseItemVo;
+import com.atguigu.guli.service.edu.vo.CourseQueryVo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,10 +20,14 @@ import java.util.List;
  */
 public interface CourseMapper extends BaseMapper<Course> {
 
+    List<AdminCourseItemVo> selectCourseItemVoPage(@Param("page") Page<AdminCourseItemVo> page, @Param("ew") QueryWrapper<CourseQueryVo> wrapper);
+
     /**
-     * 进行分页条件查询
-     * @param page  分页对象
-     * @return  查询结果
+     * 根据课程id查询课程的发布信息
+     * @param id
+     * @return
      */
-    List<AdminCourseItemVo> selectCourseItemVoPage(Page<AdminCourseItemVo> page);
+    AdminCourseItemVo getPublishInfoById(@Param("id") String id);
+
+    List<AdminCourseItemVo> getCourseItems();
 }

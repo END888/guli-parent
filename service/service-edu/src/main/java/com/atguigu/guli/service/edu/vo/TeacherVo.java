@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class TeacherQuery {
+public class TeacherVo {
     @ApiModelProperty(value = "讲师姓名")
     private String name;
 
