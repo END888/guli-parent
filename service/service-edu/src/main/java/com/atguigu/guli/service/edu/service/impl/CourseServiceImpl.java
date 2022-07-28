@@ -7,6 +7,7 @@ import com.atguigu.guli.service.edu.service.CourseDescriptionService;
 import com.atguigu.guli.service.edu.service.CourseService;
 import com.atguigu.guli.service.edu.vo.AdminCourseInfoVo;
 import com.atguigu.guli.service.edu.vo.AdminCourseItemVo;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -92,5 +93,36 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         BeanUtils.copyProperties(adminCourseInfoBo,courseDescription);
         courseDescription.setId(course.getId());
         courseDescriptionService.updateById(courseDescription);
+    }
+
+    /**
+     *  根据课程id，删除课程基本信息：edu_course、edu_course_description
+     * @param courseId
+     */
+    @Transactional
+    @Override
+    public void deleteCourseInfo(String courseId) {
+        // TODO 删除课程还需要考虑到其他表：
+        // edu_chapter、edu_comment、edu_course、edu_course_collect、
+        //edu_course_description、edu_subject、edu_video
+        courseService.removeById(courseId);
+        courseDescriptionService.removeById(courseId);
+    }
+
+    /**
+     * 方式一：使用SQL查询
+     * @param id
+     * @return
+     */
+    @Override
+    public AdminCourseItemVo getPublishInfoById(String id) {
+        return baseMapper.getPublishInfoById(id);
+    }
+
+    @Override
+    public Boolean publishCourse(String id) {
+        Course course = new Course();
+        int count = baseMapper.update(course, new LambdaUpdateWrapper<Course>().set(Course::getStatus, "Normal").eq(Course::getId, id));
+        return count > 0;
     }
 }

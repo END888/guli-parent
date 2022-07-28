@@ -2,4 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atguigu.guli.service.edu.mapper.ChapterMapper">
 
+    <resultMap id="getChapterListByCourseIdResultMap" type="chapterVo">
+        <id property="id" column="c1_id"/>
+        <result property="courseId" column="c1_courseId"/>
+        <result property="title" column="c1_title"/>
+        <result property="sort" column="c1_sort"/>
+        <collection property="videoList" ofType="video">
+            <id property="id" column="v1_id"/>
+            <result property="courseId" column="v1_courseId"/>
+            <result property="chapterId" column="v1_chapterId"/>
+            <result property="title" column="v1_title"/>
+            <result property="videoSourceId" column="v1_sourceId"/>
+            <result property="videoOriginalName" column="v1_orginalName"/>
+            <result property="sort" column="v1_sort"/>
+            <result property="playCount" column="v1_playCont"/>
+            <result property="free" column="v1_free"/>
+            <result property="duration" column="v1_duration"/>
+            <result property="status" column="v1_status"/>
+            <result property="size" column="v1_size"/>
+            <result property="version" column="v1_version"/>
+            <result property="gmtCreate" column="v1_create"/>
+            <result property="gmtModified" column="v1_modified"/>
+        </collection>
+    </resultMap>
+    <sql id="selectChapterVo">
+        select c1.id                  c1_id,
+               c1.course_id           c1_courseId,
+               c1.title               c1_title,
+               c1.sort                c1_sort,
+               v1.id                  v1_id,
+               v1.course_id           v1_courseId,
+               v1.chapter_id          v1_chapterId,
+               v1.title               v1_title,
+               v1.video_source_id     v1_sourceId,
+               v1.video_original_name v1_orginalName,
+               v1.sort                v1_sort,
+               v1.play_count          v1_playCont,
+               v1.is_free             v1_free,
+               v1.duration            v1_duration,
+               v1.status              v1_status,
+               v1.size                v1_size,
+               v1.version             v1_version,
+               v1.gmt_create          v1_create,
+               v1.gmt_modified        v1_modified
+        from edu_chapter c1
+                 left join edu_video v1 on c1.id = v1.chapter_id
+    </sql>
+    <select id="getChapterListByCourseId" resultMap="getChapterListByCourseIdResultMap">
+        <include refid="selectChapterVo"/>
+        where c1.course_id = #{courseId}
+    </select>
+    <select id="getChapterListByCourseIdPassQueryWrapper"
+            resultMap="getChapterListByCourseIdResultMap">
+        <include refid="selectChapterVo"/> ${ew.customSqlSegment}
+    </select>
 </mapper>

@@ -1,6 +1,6 @@
 package com.atguigu.guli.service.edu.service.impl;
 
-import com.atguigu.guli.service.edu.vo.TeacherQuery;
+import com.atguigu.guli.service.edu.vo.TeacherVo;
 import com.atguigu.guli.service.edu.entity.Teacher;
 import com.atguigu.guli.service.edu.feign.OssClient;
 import com.atguigu.guli.service.edu.mapper.TeacherMapper;
@@ -34,21 +34,21 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
     private OssClient ossClient;
 
     @Override
-    public IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherQuery teacherQuery) {
+    public IPage<Teacher> selectPage(Long pageNum, Long limit, TeacherVo teacherVo) {
         // 1、创建page对象
         Page<Teacher> page = new Page<>(pageNum, limit);
         // 2、构建查询语句（排序）
         LambdaQueryWrapper<Teacher> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByAsc(Teacher::getSort);
         // 3、判断teacherQuery是否为空
-        if (StringUtils.isEmpty(teacherQuery)) {
+        if (StringUtils.isEmpty(teacherVo)) {
             return baseMapper.selectPage(page, wrapper);
         }
         // 4、对查询条件分别进行非空判断，并添加查询条件
-        String name = teacherQuery.getName();
-        Integer level = teacherQuery.getLevel();
-        String joinDateBegin = teacherQuery.getJoinDateBegin();
-        String joinDateEnd = teacherQuery.getJoinDateEnd();
+        String name = teacherVo.getName();
+        Integer level = teacherVo.getLevel();
+        String joinDateBegin = teacherVo.getJoinDateBegin();
+        String joinDateEnd = teacherVo.getJoinDateEnd();
 
         if (!StringUtils.isEmpty(name)) {
             wrapper.likeRight(Teacher::getName, name);

@@ -3,7 +3,7 @@ package com.atguigu.guli.service.edu.controller.admin;
 
 import com.atguigu.guli.service.base.model.BaseEntity;
 import com.atguigu.guli.service.base.result.R;
-import com.atguigu.guli.service.edu.vo.TeacherQuery;
+import com.atguigu.guli.service.edu.vo.TeacherVo;
 import com.atguigu.guli.service.edu.entity.Teacher;
 import com.atguigu.guli.service.edu.feign.OssClient;
 import com.atguigu.guli.service.edu.service.TeacherService;
@@ -67,8 +67,8 @@ public class AdminTeacherController {
     @GetMapping("list/{page}/{limit}")
     public R listPage(@ApiParam(value = "当前页码", required = true) @PathVariable Long page,
                       @ApiParam(value = "每页记录数", required = true) @PathVariable Long limit,
-                      @ApiParam(value = "讲师列表查询对象", required = false) TeacherQuery teacherQuery) {
-        IPage<Teacher> teacherPage = teacherService.selectPage(page, limit, teacherQuery);
+                      @ApiParam(value = "讲师列表查询对象", required = false) TeacherVo teacherVo) {
+        IPage<Teacher> teacherPage = teacherService.selectPage(page, limit, teacherVo);
         return R.ok().data("pageModel", teacherPage);
     }
 

@@ -45,4 +45,23 @@ public interface CourseService extends IService<Course> {
      * @param adminCourseInfoBo
      */
     void updateCourseInfo(AdminCourseInfoVo adminCourseInfoBo);
+
+    /**
+     * 根据课程id删除课程基本信息
+     * @param courseId
+     */
+    void deleteCourseInfo(String courseId);
+
+    /**
+     * 根据课程id查询课程的发布信息
+     * @param id
+     * @return
+     */
+    AdminCourseItemVo getPublishInfoById(String id);
+
+    /**
+     * 修改该课程为已发布
+     * @param id
+     */
+    Boolean publishCourse(String id);
 }
