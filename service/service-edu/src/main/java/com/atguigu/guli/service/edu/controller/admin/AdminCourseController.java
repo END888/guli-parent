@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/edu/course")
 @Api(tags = "课程管理")
 @CrossOrigin
+@Slf4j
 public class AdminCourseController {
 
     @Autowired
@@ -104,5 +106,8 @@ public class AdminCourseController {
         }
         return R.error().message("课程发布失败");
     }
+
+
+
 }
 

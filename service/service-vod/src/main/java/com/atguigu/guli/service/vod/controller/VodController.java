@@ -7,11 +7,9 @@ import com.atguigu.guli.service.base.result.ResultCodeEnum;
 import com.atguigu.guli.service.vod.service.VodService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,6 +39,13 @@ public class VodController {
             throw new GuliException(ResultCodeEnum.VIDEO_UPLOAD_ALIYUN_ERROR,e);
         }
         return R.ok().data("videoSourceId",videoSourceId).message("视频上传成功");
+    }
+
+    @ApiOperation("根据视频源id获取凭证")
+    @GetMapping("getPlayAUth/{videoSourceId}")
+    public R getPlayAUth(@ApiParam(value = "视频源id") @PathVariable String videoSourceId){
+        String playAuth = vodService.GetVideoPlayAuth(videoSourceId);
+        return R.ok().data("playAuth",playAuth);
     }
 
 

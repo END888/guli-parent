@@ -5,7 +5,9 @@ import com.atguigu.guli.service.base.result.R;
 import com.atguigu.guli.service.edu.vo.TeacherVo;
 import com.atguigu.guli.service.edu.entity.Teacher;
 import com.atguigu.guli.service.edu.service.TeacherService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/edu/teacher")
 @Slf4j
+@Api(tags = "讲师管理")
 public class ApiTeacherController {
 
     @Autowired
@@ -89,6 +92,16 @@ public class ApiTeacherController {
             return R.ok().data("item",teacher);
         }
         return R.error().message("数据不存在");
+    }
+
+    @ApiOperation("查询首页热门的4个讲师")
+    @GetMapping("getHotTeachers")
+    public  R getHostTeachers(){
+        List<Teacher> teachers = teacherService.list(new LambdaQueryWrapper<Teacher>()
+                .select(Teacher::getId, Teacher::getName, Teacher::getAvatar)
+                .orderByDesc(Teacher::getSort)
+                .last("limit 4"));
+        return R.ok().data("items",teachers);
     }
 
 }

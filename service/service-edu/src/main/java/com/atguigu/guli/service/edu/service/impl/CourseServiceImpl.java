@@ -7,9 +7,8 @@ import com.atguigu.guli.service.edu.service.CourseDescriptionService;
 import com.atguigu.guli.service.edu.service.CourseService;
 import com.atguigu.guli.service.edu.service.SubjectService;
 import com.atguigu.guli.service.edu.service.TeacherService;
-import com.atguigu.guli.service.edu.vo.AdminCourseInfoVo;
-import com.atguigu.guli.service.edu.vo.AdminCourseItemVo;
-import com.atguigu.guli.service.edu.vo.CourseQueryVo;
+import com.atguigu.guli.service.edu.vo.*;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -144,5 +143,65 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         Course course = new Course();
         int count = baseMapper.update(course, new LambdaUpdateWrapper<Course>().set(Course::getStatus, "Normal").eq(Course::getId, id));
         return count > 0;
+    }
+
+    @Override
+    public List<Course> getCourseByCondition(ApiCourseQueryVo apiCourseQueryVo) {
+        LambdaQueryWrapper<Course> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(Course::getId,Course::getCover,Course::getTitle,Course::getViewCount,Course::getBuyCount,Course::getPrice);
+        String subjectParentId = apiCourseQueryVo.getSubjectParentId();
+        String subjectId = apiCourseQueryVo.getSubjectId();
+        Integer filterColumn = apiCourseQueryVo.getFilterColumn();
+        Integer orderType = apiCourseQueryVo.getOrderType();
+
+        if (subjectParentId != null){
+            wrapper.eq(Course::getSubjectParentId,subjectParentId);
+        }
+        if (subjectId != null){
+            wrapper.eq(Course::getSubjectId,subjectId);
+        }
+        if (filterColumn != null){
+            switch (filterColumn){
+                case 2:
+                    if (orderType == 1){
+                        // 按照发布时间升序
+                        wrapper.orderByAsc(Course::getPublishTime);
+                    }else {
+                        // 按照发布时间降序
+                        wrapper.orderByDesc(Course::getPublishTime);
+                    }
+                    break;
+                case 3:
+                    if (orderType == 1){
+                        // 按照价格升序
+                        wrapper.orderByAsc(Course::getPrice);
+                    }else {
+                        // 按照价格降序
+                        wrapper.orderByDesc(Course::getPrice);
+                    }
+                    break;
+                default:
+                    if (orderType == 1){
+                        // 按照销量升序
+                        wrapper.orderByAsc(Course::getViewCount);
+                    }else {
+                        // 按照销量降序
+                        wrapper.orderByDesc(Course::getViewCount);
+                    }
+                    break;
+            }
+        }
+        wrapper.eq(Course::getStatus,"Normal");
+        return baseMapper.selectList(wrapper);
+    }
+
+    /**
+     * 根据课程id查询课程详情页
+     * @param id
+     * @return
+     */
+    @Override
+    public CourseDetailInfo getCourseDetailPageById(String id) {
+        return baseMapper.getCourseDetailPageById(id);
     }
 }

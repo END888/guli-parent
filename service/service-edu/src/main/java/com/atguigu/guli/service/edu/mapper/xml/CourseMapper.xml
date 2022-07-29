@@ -51,23 +51,73 @@
     <select id="getCourseItems" resultType="com.atguigu.guli.service.edu.vo.AdminCourseItemVo">
         <include refid="getCourseItems"/>
     </select>
-    <select id="getPublishInfoById" resultType="com.atguigu.guli.service.edu.vo.AdminCourseItemVo">
+    <!--    <select id="getPublishInfoById" resultType="com.atguigu.guli.service.edu.vo.AdminCourseItemVo">-->
+    <!--        select c1.id,-->
+    <!--               c1.title,-->
+    <!--               c1.price,-->
+    <!--               c1.lesson_num,-->
+    <!--               c1.cover,-->
+    <!--               c1.buy_count,-->
+    <!--               c1.view_count,-->
+    <!--               c1.status,-->
+    <!--               c1.gmt_create,-->
+    <!--               t1.name  teacherName,-->
+    <!--               s1.title subjectTitle,-->
+    <!--               s2.title subjectParentTitle-->
+    <!--        from edu_course c1-->
+    <!--                 left join edu_teacher t1 on c1.teacher_id = t1.id-->
+    <!--                 left join edu_subject s1 on c1.subject_id = s1.id-->
+    <!--                 left join edu_subject s2 on s1.parent_id = s2.id-->
+    <!--        where c1.id = #{id}-->
+    <!--    </select>-->
+    <resultMap id="getCourseDetailPageByIdResultMap" type="courseDetailInfo" autoMapping="true">
+        <id column="id" property="id"/>
+        <collection property="chapterList" ofType="chapterVo">
+            <id column="chapterId" property="id"/>
+            <result column="chapterTitle" property="title"/>
+            <result column="chapterSort" property="sort"/>
+            <collection property="videoList" ofType="video">
+                <id column="videoId" property="id"/>
+                <result column="videoSourceId" property="videoSourceId"/>
+                <result column="videoSort" property="sort"/>
+                <result column="videoTitle" property="title"/>
+                <result column="videoFree" property="free"/>
+                <result column="videoOriginalName" property="videoOriginalName"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="getCourseDetailPageById" resultMap="getCourseDetailPageByIdResultMap">
         select c1.id,
-               c1.title,
-               c1.price,
-               c1.lesson_num,
                c1.cover,
+               c1.title,
                c1.buy_count,
+               c1.lesson_num,
                c1.view_count,
-               c1.status,
-               c1.gmt_create,
-               t1.name  teacherName,
-               s1.title subjectTitle,
-               s2.title subjectParentTitle
+               c1.price,
+               t1.id              teacherId,
+               t1.name            teacherName,
+               t1.level           teacherLevel,
+               t1.avatar          teacherAvatar,
+               v1.id              videoId,
+               v1.video_source_id videoSourceId,
+               v1.sort            videoSort,
+               v1.title           videoTitle,
+               v1.is_free         videoFree,
+               v1.video_original_name videoOriginalName,
+               cd.description     courseDescription,
+               c2.id              chapterId,
+               c2.title           chapterTitle,
+               c2.sort            chapterSort
         from edu_course c1
-                 left join edu_teacher t1 on c1.teacher_id = t1.id
-                 left join edu_subject s1 on c1.subject_id = s1.id
-                 left join edu_subject s2 on s1.parent_id = s2.id
+                 left join edu_teacher t1
+                           on c1.teacher_id = t1.id
+                 left join edu_course_description cd
+                           on c1.id = cd.id
+                 left join edu_chapter c2
+                           on c1.id = c2.course_id
+                 left join edu_video v1
+                           on c2.id = v1.chapter_id
         where c1.id = #{id}
+
     </select>
 </mapper>

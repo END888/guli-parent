@@ -1,11 +1,11 @@
 package com.atguigu.guli.service.edu.service;
 
 import com.atguigu.guli.service.edu.entity.Course;
-import com.atguigu.guli.service.edu.vo.AdminCourseInfoVo;
-import com.atguigu.guli.service.edu.vo.AdminCourseItemVo;
-import com.atguigu.guli.service.edu.vo.CourseQueryVo;
+import com.atguigu.guli.service.edu.vo.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -57,4 +57,8 @@ public interface CourseService extends IService<Course> {
      * @param id
      */
     Boolean publishCourse(String id);
+
+    List<Course> getCourseByCondition(ApiCourseQueryVo apiCourseQueryVo);
+
+    CourseDetailInfo getCourseDetailPageById(String id);
 }

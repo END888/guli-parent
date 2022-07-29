@@ -3,6 +3,10 @@ package com.atguigu.guli.service.vod.service.impl;
 import com.aliyun.vod.upload.impl.UploadVideoImpl;
 import com.aliyun.vod.upload.req.UploadStreamRequest;
 import com.aliyun.vod.upload.resp.UploadStreamResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthRequest;
+import com.aliyuncs.vod.model.v20170321.GetVideoPlayAuthResponse;
 import com.atguigu.guli.service.vod.properties.VodProperties;
 import com.atguigu.guli.service.vod.service.VodService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +37,45 @@ public class VodServiceImpl implements VodService {
     public String upload(String title, String fileName, InputStream inputStream) {
         return testUploadStream(accessKeyId,accessKeySecret,title,fileName,inputStream,workflowId);
     }
+
+    @Override
+    public String GetVideoPlayAuth(String videoSourceId) {
+        // 2、获取播放地址
+        DefaultAcsClient client = initVodClient(accessKeyId, accessKeySecret);
+        GetVideoPlayAuthResponse response = new GetVideoPlayAuthResponse();
+        String playAuth = "";
+        try {
+            String id = videoSourceId;
+            System.out.println("id = " + id);
+            //6f6fc0ff07f14d909e095a685bf8b56b
+            response = getVideoPlayAuth(client,id);
+            //播放凭证
+            playAuth = response.getPlayAuth();
+            System.out.print("PlayAuth = " + playAuth + "\n");
+            //VideoMeta信息
+            System.out.print("VideoMeta.Title = " + response.getVideoMeta().getTitle() + "\n");
+        } catch (Exception e) {
+            System.out.print("ErrorMessage = " + e.getLocalizedMessage());
+        }
+        System.out.print("RequestId = " + response.getRequestId() + "\n");
+        return playAuth;
+    }
+
+    public static DefaultAcsClient initVodClient(String accessKeyId, String accessKeySecret) {
+        String regionId = "cn-shanghai";  // 点播服务接入区域
+        DefaultProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
+        DefaultAcsClient client = new DefaultAcsClient(profile);
+        return client;
+    }
+
+    /*获取播放凭证函数*/
+    public static GetVideoPlayAuthResponse getVideoPlayAuth(DefaultAcsClient client,String videoId) throws Exception {
+        GetVideoPlayAuthRequest request = new GetVideoPlayAuthRequest();
+        request.setVideoId(videoId);
+        request.setAuthInfoTimeout(600L);
+        return client.getAcsResponse(request);
+    }
+
 
     /**
      * 流式上传接口,返回视频id
