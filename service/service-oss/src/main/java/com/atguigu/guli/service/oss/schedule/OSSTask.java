@@ -16,7 +16,7 @@ public class OSSTask {
     @Autowired
     OssService ossService;
 
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void delTeacherAvatars() {
         BoundHashOperations<String, String, String> ops = redisTemplate.boundHashOps("teacher:delfail:avatars");
         if (ops.size() == 0) {

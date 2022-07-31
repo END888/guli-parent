@@ -33,7 +33,6 @@ import java.util.List;
  * @since 2022-07-16
  */
 @Api(tags = "课程类别管理")
-@CrossOrigin
 @RestController
 @RequestMapping("/admin/edu/subject")
 @Slf4j

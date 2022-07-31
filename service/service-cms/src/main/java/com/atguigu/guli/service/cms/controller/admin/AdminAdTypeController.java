@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/admin/cms/ad-type")
-@CrossOrigin
 @Api(tags = "推荐管理")
 public class AdminAdTypeController {
     @Autowired

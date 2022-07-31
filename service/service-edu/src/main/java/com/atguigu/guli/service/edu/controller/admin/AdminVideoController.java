@@ -22,7 +22,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/edu/video")
-@CrossOrigin
 @Api(tags = "课时管理")
 public class AdminVideoController {
 

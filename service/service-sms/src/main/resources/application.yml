@@ -1,0 +1,31 @@
+server:
+  port: 8150 # 服务端口
+
+spring:
+  profiles:
+    active: dev # 环境设置
+  application:
+    name: service-sms # 服务名
+  jackson:
+    date-format: yyy-MM-dd HH:mmm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      max-file-size: 50MB # 一次请求单个表单项上传文件大小限制
+      max-request-size: 100MB # 一次请求多个表单项上传文件总大小限制
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: 192.168.100.100
+    port: 6379
+
+aliyun:
+  sms:
+    host: "http://dingxin.market.alicloudapi.com"
+    path: "/dx/sendSms"
+    method: "POST"
+    appcode: "91dda88b4b8b4d99b1a25c41bf1e8676"
+    tplId: "TP1711063"

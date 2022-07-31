@@ -30,7 +30,6 @@ import java.util.Map;
  * @since 2022-07-16
  */
 @Api(tags = "讲师管理")
-@CrossOrigin
 @RestController
 @RequestMapping("/admin/edu/teacher")
 @Slf4j

@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin/edu/course")
 @Api(tags = "课程管理")
-@CrossOrigin
 @Slf4j
 public class AdminCourseController {
 

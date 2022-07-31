@@ -23,7 +23,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/edu/chapter")
-@CrossOrigin
 @Api(tags = "章节管理")
 public class AdminChapterController {
 

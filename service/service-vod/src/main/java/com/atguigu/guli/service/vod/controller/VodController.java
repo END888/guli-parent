@@ -19,7 +19,6 @@ import java.util.UUID;
 @Api("视频管理")
 @RestController
 @RequestMapping("/admin/vod/video")
-@CrossOrigin
 public class VodController {
 
     @Autowired
