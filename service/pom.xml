@@ -19,6 +19,7 @@
         <module>service-cms</module>
         <module>service-sms</module>
         <module>service-ucenter</module>
+        <module>service_trade</module>
     </modules>
 
     <properties>

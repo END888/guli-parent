@@ -29,6 +29,10 @@ spring:
           uri: lb://service-vod
           predicates:
             - Path=/*/vod/**
+        - id: service-trade
+          uri: lb://service-trade
+          predicates:
+            - Path=/*/trade/**
 
   application:
     name: api-gateway

@@ -23,8 +23,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -152,31 +154,47 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
             Map map = gson.fromJson(content, Map.class);
             String accessToken = map.get("access_token").toString();
             String openid = map.get("openid").toString();
-            // 2、根据openid和accessToken获取wx用户的数据
-            url = wxLoginProperties.getUserInfoUrl() + "?" +
-                    "access_token="+accessToken +
-                    "&openid="+openid;
-            client = new HttpClientUtils(url);
-            client.get();
-            content = client.getContent();
-            if (StringUtils.isEmpty(content) || content.contains("errcode")){
-                log.error(content);
-                throw new GuliException(ResultCodeEnum.ILLEGAL_CALLBACK_REQUEST_ERROR);
+            // openid可以代表唯一的一个微信用户
+            Member member = this.getOne(new LambdaQueryWrapper<Member>().eq(Member::getOpenid, openid));
+            // 从用户表查询openid对应的数据，如果没有，代表他第一次使用wx登录来访问，需要将他的数据存到数据库中
+            if (member == null){
+                // 2、根据openid和accessToken获取wx用户的数据
+                content = getContent(accessToken, openid);
+                map = gson.fromJson(content,Map.class);
+                //解析出用户的数据
+                String nickname = map.get("nickname").toString();
+                String sex = map.get("sex").toString();
+                String province = map.get("province").toString();
+                String city = map.get("city").toString();
+                String headimgurl = map.get("headimgurl").toString();
+                String country = map.get("country").toString();
+
+                //保存数据到数据库中
+                member = new Member();
+                member.setNickname(nickname);
+                member.setOpenid(openid);
+                member.setAvatar(headimgurl);
+                this.save(member);
+            }else if ((System.currentTimeMillis()-member.getGmtModified().getTime())>=3*24*60*60*1000){
+                //  如果查询到了member对象判断他的更新时间如果超过3天 再次查询wx用户的数据更新到数据库
+                //2、根据openid和accessToken获取wx用户的数据
+                content = getContent(accessToken, openid);
+                map = gson.fromJson(content,Map.class);
+                //保存数据到数据库中
+                // Base64.getEncoder().encode()  wx后端支持 utf8 mb4的编码，支持4个字节一个字符的编码，数据库默认编码时utf8
+                member.setNickname(map.get("nickname").toString());
+                member.setAvatar(map.get("headimgurl").toString());
+                member.setGmtModified(null);//自动填充 如果属性值存在  不会自动填充
+                member.setGmtCreate(null);
+                this.updateById(member);
             }
-            //            log.info(content);
-            map = gson.fromJson(content,Map.class);
-            //解析出用户的数据
-            String nickname = map.get("nickname").toString();
-            String sex = map.get("sex").toString();
-            String province = map.get("province").toString();
-            String city = map.get("city").toString();
-            String headimgurl = map.get("headimgurl").toString();
-            String country = map.get("country").toString();
+            //如果if判断没有进去 代表member对象查询到了，代表用户不是第一次使用wx登录来访问
+
             //将wx用户的数据创建为jwt token 交给3000前端项目的首页回显
             JwtInfo jwtInfo = new JwtInfo();
-            jwtInfo.setAvatar(headimgurl);
-            jwtInfo.setNickname(nickname);
-            jwtInfo.setId(openid);
+            jwtInfo.setAvatar(member.getAvatar());
+            jwtInfo.setNickname(member.getNickname());
+            jwtInfo.setId(member.getId());
             String token = JwtHelper.createToken(jwtInfo);
             //重定向 让浏览器访问3000项目的首页 并携带token参数
             // wx登录只能在本机测试
@@ -185,5 +203,22 @@ public class MemberServiceImpl extends ServiceImpl<MemberMapper, Member> impleme
             e.printStackTrace();
             throw new GuliException(ResultCodeEnum.ILLEGAL_CALLBACK_REQUEST_ERROR);
         }
+    }
+
+    private String getContent(String accessToken, String openid) throws IOException, ParseException {
+        HttpClientUtils client;
+        String content;
+        String url;
+        url = wxLoginProperties.getUserInfoUrl()+"?" +
+                "access_token="+ accessToken +
+                "&openid="+ openid;
+        client = new HttpClientUtils(url);
+        client.get();
+        content = client.getContent();
+        if(org.apache.commons.lang3.StringUtils.isEmpty(content)||content.contains("errcode")){
+            log.error(content);
+            throw new GuliException(ResultCodeEnum.ILLEGAL_CALLBACK_REQUEST_ERROR);
+        }
+        return content;
     }
 }

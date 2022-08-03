@@ -1,15 +1,19 @@
 package com.atguigu.guli.service.edu.controller.api;
 
 
+import com.atguigu.guli.service.base.dto.CourseDto;
 import com.atguigu.guli.service.base.result.R;
 import com.atguigu.guli.service.edu.entity.Course;
+import com.atguigu.guli.service.edu.entity.Teacher;
 import com.atguigu.guli.service.edu.service.CourseService;
+import com.atguigu.guli.service.edu.service.TeacherService;
 import com.atguigu.guli.service.edu.vo.ApiCourseQueryVo;
 import com.atguigu.guli.service.edu.vo.CourseDetailInfo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +34,8 @@ public class ApiCourseController {
 
     @Autowired
     CourseService courseService;
+    @Autowired
+    TeacherService teacherService;
 
     @ApiOperation("查询所有讲师")
     @GetMapping()
@@ -62,6 +68,18 @@ public class ApiCourseController {
                 .last("limit 8"));
         return R.ok().data("items",courses);
     }
+
+    @ApiOperation("根据课程id查询要售卖的课程信息")
+    @GetMapping("getCourseDto/{id}")
+    public R getCourseDto(@ApiParam(value = "课程id")@PathVariable String id){
+        Course course = courseService.getById(id);
+        CourseDto courseDto = new CourseDto();
+        BeanUtils.copyProperties(course,courseDto);
+        Teacher teacher = teacherService.getById(course.getTeacherId());
+        courseDto.setTeacherName(teacher.getName());
+        return R.ok().data("item",courseDto);
+    }
+
 
 }
 

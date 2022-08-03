@@ -1,13 +1,17 @@
 package com.atguigu.guli.service.ucenter.controller.api;
 
+import com.atguigu.guli.service.base.dto.MemberDto;
 import com.atguigu.guli.service.base.result.R;
 import com.atguigu.guli.service.base.utils.JwtHelper;
 import com.atguigu.guli.service.base.utils.JwtInfo;
+import com.atguigu.guli.service.ucenter.entity.Member;
 import com.atguigu.guli.service.ucenter.service.MemberService;
 import com.atguigu.guli.service.ucenter.vo.MemberVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +50,18 @@ public class ApiMemberController {
         JwtInfo jwtInfo = JwtHelper.getJwtInfo(request);
         return R.ok().data("item",jwtInfo);
     }
+
+    // 远程访问接口不需要鉴权，我们只考虑用户访问时的权限
+    @ApiOperation("根据会员id查询会员信息")
+    @GetMapping("getMemberDto/{id}")
+    public R getMemberDto(@ApiParam(value = "会员id") @PathVariable String id){
+        Member member = memberService.getById(id);
+        MemberDto memberDto = new MemberDto();
+        BeanUtils.copyProperties(member,memberDto);
+        return R.ok().data("item",memberDto);
+    }
+
+
 
 
 
