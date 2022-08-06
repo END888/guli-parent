@@ -5,7 +5,7 @@ spring:
   profiles:
     active: dev # 环境设置
   application:
-    name: service-oss # 服务名
+    name: service-vod # 服务名
   jackson:
     date-format: yyy-MM-dd HH:mmm:ss
     time-zone: GMT+8

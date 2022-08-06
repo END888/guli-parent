@@ -54,6 +54,7 @@ public enum ResultCodeEnum {
     SMS_SEND_ERROR_BUSINESS_LIMIT_CONTROL(false, 28007, "短信发送过于频繁"),
 
     SERVER_INNER_ERROR(false, 26001, "服务内部错误"),
+    PAY_WX_SIGUNATURE_VALID_ERROR(false, 25004, "签名验证失败"),
     SMS_SEND_ERROR_BUSINESS_LIMIT_DAY_CONTROL(false, 28088, "短信发送次数异常,请联系管理员");
     private Boolean success;
     private Integer code;

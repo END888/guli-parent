@@ -20,7 +20,7 @@ spring:
         - id: service-sms
           uri: lb://service-sms
           predicates:
-            - Path=/*/oss/**
+            - Path=/*/sms/**
         - id: service-ucenter
           uri: lb://service-ucenter
           predicates:
@@ -33,6 +33,10 @@ spring:
           uri: lb://service-trade
           predicates:
             - Path=/*/trade/**
+        - id: service-statistics
+          uri: lb://service-statistics
+          predicates:
+            - Path=/*/statistics/**
 
   application:
     name: api-gateway

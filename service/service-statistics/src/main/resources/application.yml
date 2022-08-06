@@ -1,14 +1,16 @@
 server:
-  port: 8110
+  port: 8180
+#  tomcat:
+#    max-threads: 2
 
 spring:
+  application:
+    name: service-statistics
   datasource:
-    url: jdbc:mysql://192.168.100.100:3306/guli_edu?serverTimezone=GMT%2B8
+    url: jdbc:mysql://192.168.100.100:3306/guli_statistics?serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
-  application:
-    name: service-edu
   jackson: #返回json的全局时间格式
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -17,8 +19,6 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 127.0.0.1:8848
-      config:
         server-addr: 127.0.0.1:8848
     sentinel:
       transport:
@@ -31,17 +31,12 @@ spring:
   redis:
     port: 6379
     host: 192.168.100.100
-  rabbitmq:
-    username: admin
-    password: admin
-    host: 192.168.100.100
-    virtual-host: /admin
-    listener:
-      simple:
-        prefetch: 3 # 启用能者多劳模式
-        concurrency: 5  # 设置同一个消费者消费消息时，最多启用多少个线程来消费消息
-        acknowledge-mode: manual
-      type: simple  # 使用接收请求的线程进行ack，不使用额外的线程池来处理
+    lettuce:
+      pool:
+        max-wait: -1  # redis连接不会中断 直到操作成功
+        max-idle: 8  # 空闲时最大维护的连接数
+        min-idle: 0  # 空闲时最小的连接数
+        max-active: 20 # 最大的连接数
 feign:
   sentinel:
     enabled: true
@@ -55,8 +50,8 @@ feign:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  mapper-locations: classpath:com/atguigu/guli/service/edu/mapper/xml/*.xml
-  type-aliases-package: com.atguigu.guli.service.edu
+  mapper-locations: classpath:com/atguigu/guli/service/*/mapper/xml/*.xml
+  type-aliases-package: com.atguigu.guli.service.cms
 
 service-oss: # 调用的提供者的名称
   ribbon:
@@ -72,6 +67,8 @@ ribbon:
 
 logging:
   level:
-    com.atguigu.guli.service.edu.feign.OssClient: debug #以什么级别监控哪个接口
+    info: debug
+
+
 
 

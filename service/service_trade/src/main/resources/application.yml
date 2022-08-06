@@ -31,6 +31,14 @@ spring:
   redis:
     port: 6379
     host: 192.168.100.100
+  rabbitmq:
+    publisher-returns: true
+    publisher-confirm-type: simple
+    host: 192.168.100.100
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /admin
 feign:
   sentinel:
     enabled: true
@@ -63,5 +71,12 @@ logging:
   level:
     root: info
 
+
+wx:
+  pay:
+    appid: wxf913bfa3a2c7eeeb
+    mchid: 1543338551   # 商户号
+    partnerkey: atguigu3b0kn9g5vAtGuifHQH7X8rKCL   # 秘钥：加签验签使用
+    notifyurl: http://u4dhvyuyqilt.ngrok.xiaomiqiu123.top/api/trade/wx/callback   # 支付成功的回调地址
 
 

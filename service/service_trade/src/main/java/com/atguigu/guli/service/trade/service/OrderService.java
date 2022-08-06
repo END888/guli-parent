@@ -1,7 +1,10 @@
 package com.atguigu.guli.service.trade.service;
 
+import com.atguigu.guli.service.base.result.R;
 import com.atguigu.guli.service.trade.entity.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -14,4 +17,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface OrderService extends IService<Order> {
 
     String createOrder(String courseId, String memberId);
+
+    R getCodeUrl(String orderId, HttpServletRequest request);
+
+    String callback(HttpServletRequest request);
 }

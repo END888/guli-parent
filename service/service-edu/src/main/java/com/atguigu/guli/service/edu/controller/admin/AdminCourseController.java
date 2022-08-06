@@ -2,18 +2,22 @@ package com.atguigu.guli.service.edu.controller.admin;
 
 
 import com.atguigu.guli.service.base.result.R;
+import com.atguigu.guli.service.edu.entity.Course;
 import com.atguigu.guli.service.edu.service.CourseDescriptionService;
 import com.atguigu.guli.service.edu.service.CourseService;
 import com.atguigu.guli.service.edu.service.SubjectService;
 import com.atguigu.guli.service.edu.vo.AdminCourseInfoVo;
 import com.atguigu.guli.service.edu.vo.AdminCourseItemVo;
 import com.atguigu.guli.service.edu.vo.CourseQueryVo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/edu/course")
 @Api(tags = "课程管理")
 @Slf4j
+@RefreshScope
 public class AdminCourseController {
 
     @Autowired
@@ -106,6 +111,20 @@ public class AdminCourseController {
         return R.error().message("课程发布失败");
     }
 
+    //7、查询指定日期发布课程的数量
+    @GetMapping("getCoursePublishNum/{day}")
+    @ApiOperation("查询指定日期发布课程的数量")
+    public R getCoursePublishNum(@PathVariable("day")String day){
+        long count = courseService.count(new QueryWrapper<Course>()
+                .eq("date(publish_time)", day));
+        return R.ok().data("num",count);
+    }
+    @Value("${spring.application.name}")
+    String applicationName;
+    @GetMapping("getName")
+    public R getName(){
+        return R.ok().data("name",applicationName);
+    }
 
 
 }
